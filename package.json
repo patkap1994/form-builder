@@ -1,0 +1,11 @@
+{
+  "name": "form-builder",
+  "version": "1.0.0",
+  "description": "Building forms is easy now",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patryk Kapkowski",
+  "license": "ISC"
+}
