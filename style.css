@@ -14,7 +14,7 @@ html{
 }
 
 .app-name {
-    font-size: 3.5em;
+    font-size: 4em;
     color: rgba(0, 0, 0, 0.9);
 }
 
@@ -22,6 +22,7 @@ body {
     margin: 0 auto;
     padding: 1em 2em;
     width: 70%;
+    max-width: 1200px;
 }
 
 ul {
