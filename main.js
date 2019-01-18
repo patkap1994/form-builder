@@ -19,11 +19,9 @@
             let formsFromDB = getFormsFromDB();
 
             formsFromDB.onsuccess = ()=>{
-                //If there is database and object store, the createForms function is rendering the DOM from forms array
                 createForms(formsFromDB.result);
             }
         }
-        //If there is no database it needs to be created and the object store is made, then empty forms array is added to object store
         request.onupgradeneeded = (e)=>{
             db = e.target.result;
             let objectStore = db.createObjectStore("forms", {autoIncrement: true});
@@ -64,7 +62,6 @@
 
         formsFromDB.onsuccess = () => {
             let form = {
-                //The unique id is given to each form, from the number of childNodes in forms container
                 id: document.querySelector(".forms").childNodes.length.toString(),
                 question: "",
                 type: "",
@@ -74,7 +71,6 @@
             let forms = formsFromDB.result;
             forms.push(form);
 
-            //After adding new form to forms object, the DOM is re-rendered and forms array is saved to database
             createForms(forms);
             saveFormsToDB(forms);
         }
@@ -86,7 +82,6 @@
         let parentForm = e.currentTarget.parentNode.parentNode;
         let parentFormId = parentForm.id.toString();
         
-        //Creating new object representing sub-form, adding it to its parent form object and adding forms array to database 
         let newSubForm = {
             //Unique id is created for subform object
             id: `${parentFormId}.${parentForm.parentNode.childNodes.length-1}`.toString(),
@@ -101,8 +96,6 @@
         let formsFromDB = getFormsFromDB();
 
         formsFromDB.onsuccess = () => {
-            //Searching for subform parent form in forms object, pushing new subform object to forms object and re-rendering DOM
-            //Then saving forms array in database
             let forms = formsFromDB.result;
             let parent = findParentObject(forms, parentFormId); 
     
@@ -146,7 +139,6 @@
             let questionValue = e.target.parentNode.querySelector(".question").value;
             let selectValue = e.target.parentNode.querySelector(".select-type").value;
             
-            //If length of id is greater than 1 that means the object is the subform, not first level form and has additional fields
             if(objToChange.id.length > 1){
                 let conditionValue = e.target.parentNode.querySelector(".condition-value").value;
                 objToChange.condition_value = conditionValue;
@@ -175,7 +167,6 @@
         formsFromDB.onsuccess = () => {
             let forms = formsFromDB.result;
 
-            //If parent form id equals 1 that means this is the first level form
             if(parentFormId.length == 1) {
                 let index;
     
@@ -186,18 +177,15 @@
     
                 forms.splice(index, 1);
             } else {
-                //Id of parent form equals id of clicked form minus two last indexes
                 let parentFormIdSubstring = parentFormId.substring(0, parentFormId.length-2);
                 let child = findParentObject(forms, parentFormId);
     
-                //Setting remove property of clicked substring to true so it can be easily found
                 child.remove = true;
     
                 let parent = findParentObject(forms, parentFormIdSubstring);
                 let index;
                 
                 parent.children.forEach((elem)=>{
-                    //Setting remove property allows us to delete element that has this property
                     if(elem["remove"] == true){
                         index = parent.children.indexOf(elem);
                     }
@@ -214,15 +202,11 @@
     }
 
     //This function renders forms array to the DOM
-    //If created element is first level form then list item is undefined, because that form is not appended to the li element
-    //Only subforms are appended to li
     function createForms(arr, li = undefined) {
         let formsContainer = document.querySelector(".forms");
 
-        //If array length equals 0 then there is nothing to render
         if(arr.length > 0){
 
-            //If created element is first level form then forms container must be empty
             if(arr[0].id.length == 1){
                 formsContainer.innerHTML = "";
             }
@@ -389,8 +373,6 @@
             form.appendChild(btnDiv);
             listElement.appendChild(form);
 
-            //If element is first level form then append it to formsContainer, else first append it to its own unordered list
-            //then append it to list element passed as a parameter in a createForms function
             if(elem.id.length == 1){
                 formsContainer.appendChild(listElement);
             } else {
@@ -398,14 +380,10 @@
                 li.appendChild(formUL);
             }
 
-            //Adding event listeners to buttons
             btnAddSub.addEventListener("click", addSubInput);
             btnDelete.addEventListener("click", deleteForm);
 
-            //If elem has a children array go deeper and render it
             if(elem.children.length != 0){
-                //Passing listElement as parameter to recursive function createForms so it renders forms array elements
-                //listElement is the parent of first level form
                 createForms(elem.children, listElement);
             }
         })
@@ -416,7 +394,6 @@
                 allForms[i].addEventListener("change", changeForms);
             }
         } else {
-        //If forms array is empty just render empty container
         formsContainer.innerHTML = "";
         }
     }
